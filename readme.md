@@ -1,7 +1,13 @@
 SenML YANG Article
 ====
 
-This markdown file should provide
+### If you've kramdown-rfc and need to compile quickly:
+
+```
+$ kdrfc draft.md -r -P; evince draft.pdf &;
+```
+
+This markdown file should provide:
 
 
 What is the problem being solved?

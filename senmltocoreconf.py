@@ -1,10 +1,18 @@
+import json
 import pycoreconf
+ 
+ 
+# Create the model object
+#ccm = pycoreconf.CORECONFModel("/home/alonso/projects/lpwan_examples/senml_yang_draft/examples/ietf-lora@2016-06-01.sid", "/home/alonso/projects/lpwan_examples/senml_yang_draft/examples/senml@unknown.sid")
 
-sid_file = "./senml@unknown.sid"
-config_file = "./senml_example.json"
-ccm = pycoreconf.CORECONFModel(sid_file, model_description_file=None)
+ccm = pycoreconf.CORECONFModel("./lora-sensor-senml@unknown.sid")
+# Read JSON configuration file
+config_file = "/home/alonso/projects/lpwan_examples/senml_yang_draft/senml_example_lora.json"
 
-coreconfByteString = (ccm.toCORECONF(config_file))
-# Print hex string of the byte string
+with open(config_file, "r") as f:
+    json_data = f.read()
+print("Input JSON config data =\n", json_data, sep='')
 
-print(coreconfByteString.hex(), "\nLength:", len(coreconfByteString))
+# Convert configuration to CORECONF/CBOR
+cbor_data = ccm.toCORECONF(config_file) # can also take json_data
+print("Encoded CBOR data (CORECONF payload) =", cbor_data.hex())

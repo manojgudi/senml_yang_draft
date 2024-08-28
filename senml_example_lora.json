@@ -12,5 +12,10 @@
             "u": "%RH",
             "v": 67.3
         }
-    ]
+    ],
+    "lora": {
+        "channel-bandwidth": 125,
+        "spreading-factor": 7,
+        "coding-rate": "4_5"
+    }
 }

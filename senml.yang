@@ -26,6 +26,7 @@ module senml {
       type uint64;
       mandatory true;
     }
+
     leaf bu {
       type string;
       must "(. = 'm' or . = 'kg' or . = 'g' or . = 's' or . = 'A' or . = 'K' 
