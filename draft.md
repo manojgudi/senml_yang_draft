@@ -60,37 +60,37 @@ normative:
 
 --- abstract
 
-SenML is one of the most popular data formats used by the Internet-of-Things (IoT) devices to send simple sensor readings and device parameters over the network. However, a lack of a YANG model for SenML means it cannot be used with applications which already conform to YANG models. Furthermore, some of the encoding-formats and tools available for YANG models, cannot be extended to devices sending data in SenML format. This document provides one of the ways to model SenML format in YANG. Additionally, SenML is encoded into CORECONF format using this YANG model to concisely represent the data.
+SenML is one of the data formats used by the Internet-of-Things (IoT) devices to send simple sensor readings and device parameters over the network. However, a lack of a YANG model for SenML means it cannot be used by the applications which already use YANG for data modeling and validation. Furthermore, some of the encoding formats and tools available for YANG models, cannot be used by the devices sending data in SenML format. This document provides one of the ways to model SenML data in YANG. Additionally, SenML data is encoded into CORECONF format using this YANG model to concisely represent the data.
 
 --- middle
 
 # Introduction
 
-In its simplest form, an IoT device typically consists of at least one sensor, and ability to send this sensor measurements over the network. Occasionally, the device parameters can also be sent over the network to monitor and manipulate its behavior. Such devices are also constrained on energy, network (in its availability as well as bandwidth), and data processing capabilities as they employ primitive processors. Consequently, SenML is an appropriate choice for representing this nature of data from these devices.
+In its simplest form, an IoT device consists of at least one sensor, and ability to send measurements of this sensor over the network. Occasionally, the device parameters can also be sent over the network to monitor and manipulate its behavior. Such devices are constrained on energy, network (in its availability as well as bandwidth), and data processing capabilities as they embed primitive processors. Consequently, SenML is an appropriate choice for representing this nature of data from these devices.
 
-However, as much as SenML is useful in building simple IoT applications, a well-defined data model for the same would allow developers and engineers alike to build more complex data systems if SenML can be represented as a YANG model. Subsequently, the YANG model of SenML can leverage SID based CORECONF representation of its data to further reduce network footprint and improve its interoperability with other network devices.
+As much as SenML is useful in building simple IoT applications, a well-defined data model for the same would allow developers and engineers alike to build more complex data systems if the data can be modeled in YANG. Subsequently, the YANG model of SenML can leverage SID based CORECONF representation of its data to further reduce network footprint and improve its interoperability with other network devices.
 
 # SenML Format
 
 SenML or Sensor Measurement Lists is an data format used by the constrained devices to send sensor information over the networks {{RFC8428}}. These measurements are often structured as key-value pairs where the keys (also known as fields) describe the associated sensor data. Each field has a well defined label, whether it is mandatory to be included and the permitted values it can carry. SenML also reduces sending redundant information over the network by introducing concepts such as base-name, base-unit, base-version, base-time and base-value.
 
-Moreover, the format specifies how the application payload can be serialized in three popular formats before sending it over the network- JSON (JavaScript Object Notation) {{RFC8259}}, CBOR (Concise Binary Object Representation){{RFC8949}} and XML (Extensible Markup Language).
+The format specifies how the application payload can be serialized in three popular formats before sending it over the network- JSON (JavaScript Object Notation) {{RFC8259}}, CBOR (Concise Binary Object Representation){{RFC8949}} and XML (Extensible Markup Language).
 
-Although SenML record has a well-defined Concise Data Definition Language (CDDL) for JSON and CBOR representations in section 11 of {RFC8428}}, the lack of an accompanying data model means it is harder to use SenML for applications with strict requirement for data organization and data validation. Additionally, SenML format needs more work to integrate with messages which have well defined data models. Finally, SenML CDDL cannot be used directly to extend to other  data formats such as CoAP Management Interface (CORECONF){{I-D.ietf-core-comi}}.
+Although a SenML record has a well-defined Concise Data Definition Language (CDDL) for JSON and CBOR representations in section 11 of {RFC8428}}, the lack of an accompanying data model means it is harder to use it for applications with strict requirement for data organization and validation. Additionally, SenML CDDL cannot be used directly to extend to other  data formats such as CoAP Management Interface (CORECONF){{I-D.ietf-core-comi}}.
 
 # YANG Model Language
 
-YANG or Yet Another Next Generation is data modeling language used to describe the organization and constraints of configuration and state data of the network elements. This data is typically exchanged using NETCONF or RESTCONF protocols {{RFC7950}}. YANG boasts of rich data types and language features to represent constraints on data as rules useful for data-validation. These models often are considered de-facto interchange formats for a particular protocol (or application) which allows network device manufacturers to build inter-operable devices. Additionally, YANG supports several language extensions for constructing user-defined data types, recursive data models and allowing inheritance to reuse existing data models {{RFC6095}}.
+YANG or Yet Another Next Generation is data modeling language used to describe the organization and constraints on the configuration and state data of the network devices. This data is typically exchanged using NETCONF or RESTCONF protocols {{RFC7950}}. As YANG models are considered de-facto interchange formats for a particular protocol (or application) which allows network device manufacturers to build inter-operable devices. YANG has rich data types, language features, and supports several extensions for constructing user-defined data types, recursive data models and allowing inheritance to reuse existing data models {{RFC6095}} among others.
 
 <!--
 YANG organizes the data hierarchically in a tree format. The fundamental element of a YANG module which contains data is called a leaf, and each leaf is associated with a well-defined data type. The relationship between these leaves are modeled using elements such as containers, lists, grouping, choice etc. The entire YANG model can be visualized as a tree using helpful tools such as pyang. YANG models also outline a way to encode into popular serialization formats such as JSON, CBOR and XML in {{RFC9254}}. 
 -->
 
-Logically, to model SenML format into a YANG model, the measurements can be designed as YANG lists and each SenML record is a grouping containing leaves of SenML fields and values {{RFC9254}}. Additional constraints and rules can be added to YANG model ensure conformance with SenML specification. Visually it can be represented as follows:
+Logically, to model SenML format into a YANG model, the measurements can be designed as YANG lists and each SenML record is a grouping containing leaves of SenML fields and values {{RFC9254}}. Additional constraints and rules can be added to the model ensure conformance with SenML specification. Visually it can be represented as follows:
 
 
 |---
-| SenML Element | YANG Element
+| SenML Element | YANG Equivalent
 |-|-
 | Measurement   | List               
 | Field         | Leaf               
@@ -100,26 +100,26 @@ Logically, to model SenML format into a YANG model, the measurements can be desi
 |===
 
 
-Section 11 of {{RFC8428}} specifies how SenML format is described for encoding into JSON, XML and CBOR. However, IoT devices which use YANG data models for data validation and data exchange, don't have any easy way to incorporate and validate their SenML measurements. Additionally, in absence of a YANG model, low powered devices which send measurements in SenML, cannot use CORECONF representation model without resorting to some sort of intermediate data processing. Hence, if SenML has a YANG model, these low powered devices can describe their data entirely in it. Their data can further be transformed in CORECONF, which complies with SenML-CBOR encoding rules and which can be transmitted over the network.
+Section 11 of {{RFC8428}} specifies how SenML format is described for encoding into JSON, XML and CBOR. However, IoT devices which use YANG data models don't have any easy way to incorporate and validate their SenML measurements. Additionally, in absence of a YANG model, low powered devices which send measurements in SenML, cannot use CORECONF representation model without resorting to some sort of intermediate data processing. Hence, if SenML has a YANG model, these low powered devices can describe their data entirely in it. Their data can further be transformed in CORECONF, which complies with SenML-CBOR encoding rules before transmitting it over the network.
 
 To enable accurate, fast and efficient transmission of data conforming to YANG models, Schema Identifiers (known as SIDs) can be generated and assigned for each YANG element {{I-D.ietf-core-sid}} . These SIDs can be used to transform data in CORECONF format as demonstrated in {{I-D.toutain-t2t-sid-extension}}. An example of this is also described in [Transforming SenML to CORECONF](#transforming-senml-to-coreconf) below.
 
 
 # YANG Model for SenML: Considerations
 
-As described in {{RFC8428}}, SenML measurements consists of field and its corresponding value, and each field is identified by its label (which are different for JSON and CBOR). Each value has a well-defined data-type for encoding in JSON, in CBOR or in XML as outlined in [section 12.2 RFC 8428](https://www.rfc-editor.org/rfc/rfc8428#section-12.2).
-Hence, to describe a generic SenML model in YANG, it is necessary to represent each field as a YANG leaf with the most appropriate YANG type assosciated with the type from the "XML Type" Column.
+As described in {{RFC8428}}, SenML measurements consists of field and a value, and each field is identified by its label (which are different for JSON and CBOR). Each value has a well-defined data-type for encoding in JSON, in CBOR or in XML as outlined in [section 12.2 RFC 8428](https://www.rfc-editor.org/rfc/rfc8428#section-12.2).
+Hence, to describe a generic SenML model in YANG, it is necessary to represent each field as a YANG leaf with the most appropriate YANG type associated with the type from the "XML Type" Column.
 
 An user data type is created in the YANG model to make XML Integer like type-definition. XML [Double type](https://www.w3.org/TR/xmlschema11-2/#double) follows [IEEE 754-2008 definition](https://ieeexplore.ieee.org/document/4610935), which results in approximately 15 significant digits. However for the YANG model, XML Double is replaced by a Number type, which is a decimal64 type with 5 precision digits and has a range of \[-92233720368547.75808, 92233720368547.75807\]. This is chosen arbitrarily to balance precision and range in YANG but can be changed by the user later.
 
 * bn:  
-    Base Name which is directly mapped to String
+    Base Name, which is directly mapped to String
 * bt:  
-    Base Time which is mapped to closest type available in YANG, decimal64. 
+    Base Time, which is mapped to closest type available in YANG, decimal64. 
 * bu:  
-    Base Unit which can be mapped to string type in YANG with special rules where units can be restricted to ones listed in Section 12.1 (primary units) of {{RFC8428}} or can be extended to support secondary units described Section 3 in {{RFC8798}}.
+    Base Unit, which can be mapped to string type in YANG with special rules where units can be restricted to ones listed in Section 12.1 (primary units) of {{RFC8428}} or can be extended to support secondary units described Section 3 in {{RFC8798}}.
 * bv:  
-    Base Value which can be mapped to decimal64 type in YANG, with precision of 5 digits. This can be overridden using redefine keyword when this YANG module is imported. 
+    Base Value, which can be mapped to decimal64 type in YANG, with precision of 5 digits. This can be overridden using redefine keyword when this YANG module is imported. 
 * bs:  
     Base Sum, live Base Value, can be mapped to decimal64 type and its precision can be overridden later.
 * bver:  
@@ -131,15 +131,15 @@ An user data type is created in the YANG model to make XML Integer like type-def
     Unit, modeled as string.
 
 * leaves v,vs,vb,vd:  
-    Value, Value String, Value Boolean and Value Data, modelled as a choice type as exactly one field must appear unless there is a sum field, in which case it is allowed to have no value fields.
+    Value, Value String, Value Boolean and Value Data, modeled as a choice type as exactly one field must appear unless there is a sum field, in which case it is allowed to have no value fields.
 * s:  
     Sum, mapped as a decimal64 with 5 digit precision.
 * t:  
-    Time, mapped as a decimal64 with 5 digit precision. It is optional in SenML to provide time value. However, time leaf is mandatory in YANG if measurement lists are used as it modeled as the key for the measurements. 
+    Time, mapped as a decimal64 with 5 digit precision. Although it is optional in SenML to provide time but for this YANG model, it is mandatory-leaf if measurement lists are used as time is the key for the measurements list (e).
 * ut:  
     Update Time, mapped as a decimal64 with 5 digit precision.
 * list e:  
-    SenML measurement lists, labeled here as "e" (events) is mapped as a list type in YANG with constraint on time (t) as the key. Thus, t becomes a mandatory leaf in record as a YANG list must have a key.
+    SenML measurement lists, labeled here as "e" (events) is mapped as a list type in YANG with constraint on time (t) as the key. Thus, t has to be present and unique in the measurement lists.
 
 
 # YANG Model for SenML: Implementation
@@ -226,7 +226,7 @@ Number of SIDs available : 100
 Number of SIDs used : 17
 ~~~~
 
-However, we can modify the SIDs manually so that the resultant CORECONF will have deltas which exactly match CBOR Labels as defined in section 12.2 of {{RFC8428}}:
+However, we can modify the SIDs manually so that the resultant CORECONF will have deltas conforming to SenML-CBOR Labels as defined in section 12.2 of {{RFC8428}}:
 
 ~~~~
 SID        Assigned to
@@ -266,13 +266,15 @@ The CORECONF diagnostic format of the data instance is shown below:
 }
 ~~~~
 
-Finally, comparing the JSON with the corresponding CORECONF-CBOR encoded form, is shown below:
+The above CORECONF list conforms to SenML CBOR specification and can be easily parsed by SenML parsers. Also, it is represented in CBOR encoded hexadecimal digits as follows:
 
 ~~~~
 CBOR Hex:
 
 a119ea6082a621781b75726e3a6465763a6f773a3130653230373361303130383030363a22fb3ff004189374bc6a006b74656d7065726174757265016343656c02fb403719999999999a0601a4006868756d6964697479016325524802fb4050d333333333330602
 ~~~~
+
+Finally, a simple comparison of the JSON with the corresponding CORECONF-CBOR encoded form is shown below:
 
 |---
 | Module Name | JSON Size | CORECONF Size | Compression %
@@ -281,8 +283,6 @@ a119ea6082a621781b75726e3a6465763a6f773a3130653230373361303130383030363a22fb3ff0
 | Absent  | 121 Bytes | 100 Bytes  | 17.36
 |===
 
-
-Moreover, the CBOR code above resembles the SenML-CBOR encoding and thus the existing SenML decoders should be able to parse it without any additional modifications necessary.
 
 # Further work
 
