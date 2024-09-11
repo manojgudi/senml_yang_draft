@@ -5,7 +5,7 @@ import pycoreconf
 # Create the model object
 #ccm = pycoreconf.CORECONFModel("/home/alonso/projects/lpwan_examples/senml_yang_draft/examples/ietf-lora@2016-06-01.sid", "/home/alonso/projects/lpwan_examples/senml_yang_draft/examples/senml@unknown.sid")
 
-ccm = pycoreconf.CORECONFModel("./senml@unknown.sid")
+ccm = pycoreconf.CORECONFModel("./senml@modified.sid")
 # Read JSON configuration file
 config_file = "/home/alonso/projects/lpwan_examples/senml_yang_draft/senml_example.json"
 

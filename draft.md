@@ -10,7 +10,7 @@ pi:
   compact: 'yes'
   toc: 'yes'
 
-title: SenML is CORECONF!
+title: SenML is CORECONF (almost)
 abbrev: SenML CORECONF
 wg: t2t Research Group
 author:
@@ -45,6 +45,16 @@ author:
   country: France
   email: javier-alejandro.fernandez-cordova@imt-atlantique.net 
 
+- ins: Jean-Marie BONNIN
+  name: Jean-Marie BONNIN
+  org: Institut MINES TELECOM; IMT Atlantique
+  street:
+  - 2 rue de la Chataigneraie
+  - CS 17607
+  city: 35576 Cesson-Sevigne Cedex
+  country: France
+  email: jm.bonnin@imt-atlantique.fr
+
 normative:
   RFC8428:
   RFC8798:
@@ -58,6 +68,8 @@ normative:
   I-D.ietf-core-comi:
   I-D.toutain-t2t-sid-extension:
 
+
+
 --- abstract
 
 SenML is one of the data formats used by the Internet-of-Things (IoT) devices to send simple sensor readings and device parameters over the network. However, a lack of a YANG model for SenML means it cannot be used by the applications which already use YANG for data modeling and validation. Furthermore, some of the encoding formats and tools available for YANG models, cannot be used by the devices sending data in SenML format. This document provides one of the ways to model SenML data in YANG. Additionally, SenML data is encoded into CORECONF format using this YANG model to concisely represent the data.
@@ -66,7 +78,7 @@ SenML is one of the data formats used by the Internet-of-Things (IoT) devices to
 
 # Introduction
 
-In its simplest form, an IoT device consists of at least one sensor, and ability to send measurements of this sensor over the network. Occasionally, the device parameters can also be sent over the network to monitor and manipulate its behavior. Such devices are constrained on energy, network (in its availability as well as bandwidth), and data processing capabilities as they embed primitive processors. Consequently, SenML is an appropriate choice for representing this nature of data from these devices.
+In its simplest form, an IoT device consists of at least one sensor, and ability to send measurements of this sensor over the network. Occasionally, the device parameters can also be sent over the network to monitor and manipulate its behavior. Such devices are constrained on energy, network (in its availability as well as bandwidth), and data processing capabilities as they embed low power processors. Consequently, SenML is an appropriate choice for representing this nature of data from these devices.
 
 As much as SenML is useful in building simple IoT applications, a well-defined data model for the same would allow developers and engineers alike to build more complex data systems if the data can be modeled in YANG. Subsequently, the YANG model of SenML can leverage SID based CORECONF representation of its data to further reduce network footprint and improve its interoperability with other network devices.
 
@@ -86,7 +98,7 @@ YANG or Yet Another Next Generation is data modeling language used to describe t
 YANG organizes the data hierarchically in a tree format. The fundamental element of a YANG module which contains data is called a leaf, and each leaf is associated with a well-defined data type. The relationship between these leaves are modeled using elements such as containers, lists, grouping, choice etc. The entire YANG model can be visualized as a tree using helpful tools such as pyang. YANG models also outline a way to encode into popular serialization formats such as JSON, CBOR and XML in {{RFC9254}}. 
 -->
 
-Logically, to model SenML format into a YANG model, the measurements can be designed as YANG lists and each SenML record is a grouping containing leaves of SenML fields and values {{RFC9254}}. Additional constraints and rules can be added to the model ensure conformance with SenML specification. Visually it can be represented as follows:
+Logically, to model SenML format into a YANG model, the measurements can be designed as YANG lists and each SenML record is a grouping containing leaves of SenML fields and values {{RFC9254}}. Additional constraints and rules can be added to the model ensuring conformance with SenML specification. Visually it can be represented as follows:
 
 
 |---
@@ -110,7 +122,7 @@ To enable accurate, fast and efficient transmission of data conforming to YANG m
 As described in {{RFC8428}}, SenML measurements consists of field and a value, and each field is identified by its label (which are different for JSON and CBOR). Each value has a well-defined data-type for encoding in JSON, in CBOR or in XML as outlined in [section 12.2 RFC 8428](https://www.rfc-editor.org/rfc/rfc8428#section-12.2).
 Hence, to describe a generic SenML model in YANG, it is necessary to represent each field as a YANG leaf with the most appropriate YANG type associated with the type from the "XML Type" Column.
 
-An user data type is created in the YANG model to make XML Integer like type-definition. XML [Double type](https://www.w3.org/TR/xmlschema11-2/#double) follows [IEEE 754-2008 definition](https://ieeexplore.ieee.org/document/4610935), which results in approximately 15 significant digits. However for the YANG model, XML Double is replaced by a Number type, which is a decimal64 type with 5 precision digits and has a range of \[-92233720368547.75808, 92233720368547.75807\]. This is chosen arbitrarily to balance precision and range in YANG but can be changed by the user later.
+A user data type is created in the YANG model to make XML Integer like type-definition. XML [Double type](https://www.w3.org/TR/xmlschema11-2/#double) follows [IEEE 754-2008 definition](https://ieeexplore.ieee.org/document/4610935), which results in approximately 15 significant digits. However for the YANG model, XML Double is replaced by a Number type, which is a decimal64 type with 5 precision digits and has a range of \[-92233720368547.75808, 92233720368547.75807\]. This is chosen arbitrarily to balance precision and range in YANG but can be changed by the user later.
 
 * bn:  
     Base Name, which is directly mapped to String
@@ -250,7 +262,10 @@ SID        Assigned to
 60003      data /senml:e/vs
 ~~~~
 
-The CORECONF diagnostic format of the data instance is shown below:
+SID allocation rule states that for every unique YANG identifier, there is a corresponding unique SID number{{I-D.ietf-core-sid}}. This rule is broken here to ensure the delta for "n" is computed to be 0 to match SenML-CBOR label definition.
+Hence, top-level key "e" and "n" have the same SID. However, "e" is not part of existing SenML label set as defined in the section 4.3 of {{RFC8428}}.
+
+The resulting CORECONF diagnostic format of the data instance is shown below:
 
 ~~~~
 {60000: [{-3: 1.001,
@@ -266,7 +281,7 @@ The CORECONF diagnostic format of the data instance is shown below:
 }
 ~~~~
 
-The above CORECONF list conforms to SenML CBOR specification and can be easily parsed by SenML parsers. Also, it is represented in CBOR encoded hexadecimal digits as follows:
+Corresponding CBOR encoded hexadecimal is shown below:
 
 ~~~~
 CBOR Hex:
@@ -274,23 +289,27 @@ CBOR Hex:
 a119ea6082a621781b75726e3a6465763a6f773a3130653230373361303130383030363a22fb3ff004189374bc6a006b74656d7065726174757265016343656c02fb403719999999999a0601a4006868756d6964697479016325524802fb4050d333333333330602
 ~~~~
 
+If the module name contained in the first 4 bytes ("a119ea60") is removed, then the resultant CBOR conforms to SenML CBOR specification and can be easily parsed by SenML parsers.
+
+Thus, a SenML CBOR representation can be almost CORECONF representation just by adding 4 bytes of the encoded module name.
+
 Finally, a simple comparison of the JSON with the corresponding CORECONF-CBOR encoded form is shown below:
 
 |---
-| Module Name | JSON Size | CORECONF Size | Compression %
+| 4 byte module-name | JSON Size | CORECONF Size | Compression %
 |-|- |-|-
-| Present | 140 Bytes |  104 Bytes | 25.71
-| Absent  | 121 Bytes | 100 Bytes  | 17.36
+| Present | 136 Bytes |  104 Bytes | 23.53
+| Absent  | 125 Bytes | 100 Bytes  | 19.99
 |===
 
 
 # Further work
 
-Three primary areas of future work have been identified to improve SenML YANG modelling- 
+Some areas of future work have been identified to improve SenML YANG modelling- 
 
-1. Base units can be either modelled as enumerated type or identityref type, so they can be assigned a SID value. This should ideally further reduce the CORECONF-CBOR encoded message.
-2. Constraints on having leaves v, vs, vb, vd optional if s is available as described in Section 4.2 of {{RFC8428}}
-3. Add secondary units described in {{RFC8798}} in the base units constraints.
-4. SIDs for /senml:e/n and /senml:e have to be identical in order for CORECONF to correctly have 0 as CBOR Label for the name field. This in theory breaks uniqueness of the schema identifiers, however it won't affect the data encoding or decoding.
+ 1. Base units can be either modelled as enumerated type or identityref type, so they can be assigned a SID value. This should ideally further reduce the CORECONF-CBOR encoded message.
+ 2. Constraints on having leaves v, vs, vb, vd optional if s is available as described in Section 4.2 of {{RFC8428}}
+ 3. Add secondary units described in {{RFC8798}} in the base units constraints.
+ 4. Uniqueness for SIDs can be restored by modifying SenML-CBOR label value for "n" to be any unused integer except 0.
 
 
