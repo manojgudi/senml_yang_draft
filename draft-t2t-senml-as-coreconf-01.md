@@ -13,6 +13,9 @@ pi:
 title: SenML is CORECONF (almost)
 abbrev: SenML CORECONF
 wg: t2t Research Group
+date: 2024-09-12
+revision: 00
+submissionType: IETF
 author:
 
 - ins: M. Gudi
