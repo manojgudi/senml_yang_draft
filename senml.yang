@@ -5,7 +5,7 @@ module senml {
   prefix sen;
 
   organization
-    "LWM2M Working Group";
+    "IMT Atlantique";
 
   typedef Integer {
     type union{

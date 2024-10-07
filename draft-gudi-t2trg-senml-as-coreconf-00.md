@@ -1,7 +1,7 @@
 ---
 stand_alone: true
 ipr: trust200902
-docname: draft-t2t-senml-as-coreconf
+docname: draft-gudi-t2trg-senml-as-coreconf-00
 cat: std
 pi:
   symrefs: 'yes'
@@ -13,7 +13,7 @@ pi:
 title: SenML is CORECONF (almost)
 abbrev: SenML CORECONF
 wg: t2t Research Group
-date: 2024-09-12
+date: 2024-10-07
 revision: 00
 submissionType: IETF
 author:
@@ -91,7 +91,7 @@ SenML or Sensor Measurement Lists is an data format used by the constrained devi
 
 The format specifies how the application payload can be serialized in three popular formats before sending it over the network- JSON (JavaScript Object Notation) {{RFC8259}}, CBOR (Concise Binary Object Representation){{RFC8949}} and XML (Extensible Markup Language).
 
-Although a SenML record has a well-defined Concise Data Definition Language (CDDL) for JSON and CBOR representations in section 11 of {RFC8428}}, the lack of an accompanying data model means it is harder to use it for applications with strict requirement for data organization and validation. Additionally, SenML CDDL cannot be used directly to extend to other  data formats such as CoAP Management Interface (CORECONF){{I-D.ietf-core-comi}}.
+Although a SenML record has a well-defined Concise Data Definition Language (CDDL) for JSON and CBOR representations in section 11 of {{RFC8428}}, the lack of an accompanying data model (specifically in YANG), means it is harder to use it for applications with strict requirement for data organization and validation. Additionally, SenML CDDL cannot be used directly to extend to other  data formats such as CoAP Management Interface (CORECONF){{I-D.ietf-core-comi}}.
 
 # YANG Model Language
 
